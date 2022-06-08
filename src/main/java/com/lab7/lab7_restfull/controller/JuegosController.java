@@ -1,20 +1,21 @@
 package com.lab7.lab7_restfull.controller;
 
 import com.lab7.lab7_restfull.entity.Juego;
+import com.lab7.lab7_restfull.entity.JuegoUserDTO;
 import com.lab7.lab7_restfull.repository.JuegosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 public class JuegosController {
@@ -48,6 +49,22 @@ public class JuegosController {
         }
         responseJson.put("result","failure");
         return ResponseEntity.badRequest().body(responseJson);
+    }
+
+    @GetMapping(value = "/juegos/usuario/{id}")
+    public List<JuegoUserDTO> obtenerJuegoPorIdUser(@PathVariable("id") String idStr){
+        try{
+            int id = Integer.parseInt(idStr);
+
+            List<JuegoUserDTO> lista = juegosRepository.obtenerJuegosPorUser(id);
+            if(lista.size()>0){
+                return lista;
+            }
+        }catch (NumberFormatException e){
+
+        }
+        List<JuegoUserDTO> listaVacia = new ArrayList<>();
+        return listaVacia;
     }
 
     @PostMapping(value = "/juegos")
@@ -89,7 +106,7 @@ public class JuegosController {
                 return ResponseEntity.ok(responseMap);
             }else{
                 responseMap.put("estado","error");
-                responseMap.put("msg", "no se encontró el producto con el id: "+id);
+                responseMap.put("msg", "no se encontró el juego con el id: "+id);
                 return ResponseEntity.badRequest().body(responseMap);
             }
         }catch (NumberFormatException ex){
