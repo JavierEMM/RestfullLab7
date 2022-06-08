@@ -24,19 +24,19 @@ public class Juego {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idgenero")
-    private Genero idgenero;
+    private Genero genero;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idplataforma")
-    private Plataforma idplataforma;
+    private Plataforma plataforma;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ideditora")
-    private Editora ideditora;
+    private Editora editora;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "iddistribuidora")
-    private Distribuidora iddistribuidora;
+    private Distribuidora distribuidora;
 
     public Integer getId() {
         return id;
@@ -78,36 +78,36 @@ public class Juego {
         this.image = image;
     }
 
-    public Genero getIdgenero() {
-        return idgenero;
+    public Genero getGenero() {
+        return genero;
     }
 
-    public void setIdgenero(Genero idgenero) {
-        this.idgenero = idgenero;
+    public void setGenero(Genero idgenero) {
+        this.genero = idgenero;
     }
 
-    public Plataforma getIdplataforma() {
-        return idplataforma;
+    public Plataforma getPlataforma() {
+        return plataforma;
     }
 
-    public void setIdplataforma(Plataforma idplataforma) {
-        this.idplataforma = idplataforma;
+    public void setPlataforma(Plataforma idplataforma) {
+        this.plataforma = idplataforma;
     }
 
-    public Editora getIdeditora() {
-        return ideditora;
+    public Editora getEditora() {
+        return editora;
     }
 
-    public void setIdeditora(Editora ideditora) {
-        this.ideditora = ideditora;
+    public void setEditora(Editora ideditora) {
+        this.editora = ideditora;
     }
 
-    public Distribuidora getIddistribuidora() {
-        return iddistribuidora;
+    public Distribuidora getDistribuidora() {
+        return distribuidora;
     }
 
-    public void setIddistribuidora(Distribuidora iddistribuidora) {
-        this.iddistribuidora = iddistribuidora;
+    public void setDistribuidora(Distribuidora iddistribuidora) {
+        this.distribuidora = iddistribuidora;
     }
 
 }
