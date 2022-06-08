@@ -4,32 +4,32 @@ package com.lab7.lab7_restfull.controller;
 import com.lab7.lab7_restfull.entity.Distribuidora;
 import com.lab7.lab7_restfull.repository.DistribuidorasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api")
 public class DistribuidoraController {
 
     @Autowired
     DistribuidorasRepository distribuidorasRepository;
 
 
-    @GetMapping(value="/distribuidora", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
+    @GetMapping(value="/api/distribuidora", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public List<Distribuidora> listaDistribuidoras(){
         List<Distribuidora> listaD=distribuidorasRepository.findAll();
         return listaD;
     }
 
-    @GetMapping(value="/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
+    @GetMapping(value="/api/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public ResponseEntity<HashMap<String, Object>> obtenerDistribuidorasId(@PathVariable("id") String idstr){
         HashMap<String, Object> responseJson = new HashMap<>();
 
@@ -51,6 +51,31 @@ public class DistribuidoraController {
            responseJson.put("msg","El id debe ser un código numérico");
            return ResponseEntity.badRequest().body(responseJson);
        }
+    }
+
+    @PostMapping("/api/distribuidora")
+    public ResponseEntity<HashMap<String, Object>> crearDistribuidora(
+            @RequestBody Distribuidora distribuidora,
+            @RequestParam(value = "fetchId", required = false) boolean fetchId){
+        HashMap<String, Object> responseJson = new HashMap<>();
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        distribuidorasRepository.save(distribuidora);
+        if(fetchId){
+            responseMap.put("id",distribuidora.getId());
+        }
+        responseMap.put("creado","ok");
+        return  ResponseEntity.status(HttpStatus.CREATED).body(responseJson);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<HashMap<String, Object>> gestionarExcepcion(HttpServletRequest request){
+        HashMap<String, Object> responseJson = new HashMap<>();
+        if(request.getMethod().equals("POST")){
+            responseJson.put("estado", "error");
+            responseJson.put("msg","debes enviar el producto");
+        }
+        return  ResponseEntity.badRequest().body(responseJson);
     }
 
 
