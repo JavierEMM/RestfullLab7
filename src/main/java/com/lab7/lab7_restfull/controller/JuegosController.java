@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +25,6 @@ public class JuegosController {
 
     @GetMapping(value = "/api/juegos")
     public List<Juego> listarJuegosApi(){
-        List<Juego> lista = juegosRepository.findAll();
-        return lista;
-    }
-
-    @PostMapping(value = "/api/juegos")
-    public List<Juego> listarJuegosApiPOST(){
         List<Juego> lista = juegosRepository.findAll();
         return lista;
     }
@@ -68,5 +64,38 @@ public class JuegosController {
     }
 
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<HashMap<String,String>> gestionExepcion(HttpServletRequest request){
+
+        HashMap<String,String> responseMap = new HashMap<>();
+        if(request.getMethod().equals("POST")){
+            responseMap.put("estado","error");
+            responseMap.put("msg","Debe enviar un producto");
+        }
+        return ResponseEntity.badRequest().body(responseMap);
+
+    }
+
+
+    @DeleteMapping(value = "/juegos/{id}")
+    public ResponseEntity<HashMap<String,Object>> borrarJuego(@PathVariable("id") String idStr){
+        HashMap<String,Object> responseMap = new HashMap<>();
+        try{
+            int id = Integer.parseInt(idStr);
+            if(juegosRepository.existsById(id)){
+                juegosRepository.deleteById(id);
+                responseMap.put("estado","borrado exitoso");
+                return ResponseEntity.ok(responseMap);
+            }else{
+                responseMap.put("estado","error");
+                responseMap.put("msg", "no se encontró el producto con el id: "+id);
+                return ResponseEntity.badRequest().body(responseMap);
+            }
+        }catch (NumberFormatException ex){
+            responseMap.put("estado","error");
+            responseMap.put("msg", "El id debe ser un número");
+            return ResponseEntity.badRequest().body(responseMap);
+        }
+    }
 
 }
