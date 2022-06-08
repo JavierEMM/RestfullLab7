@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api")
 public class DistribuidoraController {
 
     @Autowired
@@ -27,7 +26,7 @@ public class DistribuidoraController {
         List<Distribuidora> listaD = distribuidorasRepository.findAll();
         return listaD;
     }
-    @GetMapping(value="/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
+    @GetMapping(value="/api/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public ResponseEntity<HashMap<String, Object>> obtenerDistribuidorasId(@PathVariable("id") String idstr){
         HashMap<String, Object> responseJson = new HashMap<>();
 
@@ -140,19 +139,6 @@ public class DistribuidoraController {
         return ResponseEntity.badRequest().body(responseMap);
     }
 
-
-
-
-
-    //@ExceptionHandler(HttpMessageNotReadableException.class)
-    //public ResponseEntity<HashMap<String, Object>> gestionarExcepcion(HttpServletRequest request){
-    //    HashMap<String, Object> responseJson = new HashMap<>();
-    //    if(request.getMethod().equals("POST")){
-    //        responseJson.put("estado", "error");
-    //        responseJson.put("msg","debes enviar el producto");
-    //    }
-    //    return  ResponseEntity.badRequest().body(responseJson);
-    //}
 
     @DeleteMapping(value = "/api/distribuidora/{id}")
     public ResponseEntity<HashMap<String, Object>> borrarDistribuidora(@PathVariable("id") String idStr) {
