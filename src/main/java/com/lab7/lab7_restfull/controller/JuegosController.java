@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 public class JuegosController {
@@ -89,7 +88,7 @@ public class JuegosController {
                 return ResponseEntity.ok(responseMap);
             }else{
                 responseMap.put("estado","error");
-                responseMap.put("msg", "no se encontró el producto con el id: "+id);
+                responseMap.put("msg", "no se encontró el juego con el id: "+id);
                 return ResponseEntity.badRequest().body(responseMap);
             }
         }catch (NumberFormatException ex){
