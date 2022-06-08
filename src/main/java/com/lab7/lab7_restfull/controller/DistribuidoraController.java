@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api")
 public class DistribuidoraController {
 
     @Autowired
@@ -27,7 +26,7 @@ public class DistribuidoraController {
         List<Distribuidora> listaD = distribuidorasRepository.findAll();
         return listaD;
     }
-    @GetMapping(value="/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
+    @GetMapping(value="/api/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public ResponseEntity<HashMap<String, Object>> obtenerDistribuidorasId(@PathVariable("id") String idstr){
         HashMap<String, Object> responseJson = new HashMap<>();
 
@@ -56,13 +55,10 @@ public class DistribuidoraController {
             @RequestBody Distribuidora distribuidora,
             @RequestParam(value = "fetchId", required = false) boolean fetchId){
         HashMap<String, Object> responseJson = new HashMap<>();
-        HashMap<String, Object> responseMap = new HashMap<>();
 
         distribuidorasRepository.save(distribuidora);
-        if(fetchId){
-            responseMap.put("id",distribuidora.getId());
-        }
-        responseMap.put("creado","ok");
+
+        responseJson.put("creado","ok");
         return  ResponseEntity.status(HttpStatus.CREATED).body(responseJson);
     }
 
@@ -139,20 +135,6 @@ public class DistribuidoraController {
         responseMap.put("estado", "error");
         return ResponseEntity.badRequest().body(responseMap);
     }
-
-
-
-
-
-    //@ExceptionHandler(HttpMessageNotReadableException.class)
-    //public ResponseEntity<HashMap<String, Object>> gestionarExcepcion(HttpServletRequest request){
-    //    HashMap<String, Object> responseJson = new HashMap<>();
-    //    if(request.getMethod().equals("POST")){
-    //        responseJson.put("estado", "error");
-    //        responseJson.put("msg","debes enviar el producto");
-    //    }
-    //    return  ResponseEntity.badRequest().body(responseJson);
-    //}
 
     @DeleteMapping(value = "/api/distribuidora/{id}")
     public ResponseEntity<HashMap<String, Object>> borrarDistribuidora(@PathVariable("id") String idStr) {
