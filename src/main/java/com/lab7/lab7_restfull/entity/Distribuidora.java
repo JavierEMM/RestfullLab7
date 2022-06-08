@@ -22,7 +22,7 @@ public class Distribuidora {
     @Column(name = "web", length = 200)
     private String web;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idsede")
     private Paise idsede;
 
