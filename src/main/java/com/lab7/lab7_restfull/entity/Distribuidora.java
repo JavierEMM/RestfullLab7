@@ -22,9 +22,9 @@ public class Distribuidora {
     @Column(name = "web", length = 200)
     private String web;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idsede")
-    private Paise idsede;
+    private Paises idsede;
 
     public Integer getId() {
         return id;
@@ -66,11 +66,11 @@ public class Distribuidora {
         this.web = web;
     }
 
-    public Paise getIdsede() {
+    public Paises getIdsede() {
         return idsede;
     }
 
-    public void setIdsede(Paise idsede) {
+    public void setIdsede(Paises idsede) {
         this.idsede = idsede;
     }
 

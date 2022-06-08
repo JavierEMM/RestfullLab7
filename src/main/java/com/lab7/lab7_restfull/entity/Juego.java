@@ -1,10 +1,13 @@
 package com.lab7.lab7_restfull.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "juegos")
-public class Juego {
+public class Juego implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idjuego", nullable = false)
@@ -22,19 +25,19 @@ public class Juego {
     @Column(name = "image", length = 400)
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idgenero")
     private Genero genero;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idplataforma")
     private Plataforma plataforma;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ideditora")
     private Editora editora;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "iddistribuidora")
     private Distribuidora distribuidora;
 
