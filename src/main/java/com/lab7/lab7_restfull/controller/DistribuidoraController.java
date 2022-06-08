@@ -4,24 +4,62 @@ package com.lab7.lab7_restfull.controller;
 import com.lab7.lab7_restfull.entity.Distribuidora;
 import com.lab7.lab7_restfull.repository.DistribuidorasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/api")
 public class DistribuidoraController {
 
     @Autowired
     DistribuidorasRepository distribuidorasRepository;
 
+    @PutMapping(value = "/api/distribuidora")
+    public ResponseEntity<HashMap<String,Object>> actualizarDistribuidora(@RequestBody Distribuidora distribuidora) {
+
+        HashMap<String, Object> responseJson = new HashMap<>();
+
+        if (distribuidora.getId() != null && distribuidora.getId() > 0) {
+            Optional<Distribuidora> opt = distribuidorasRepository.findById(distribuidora.getId());
+            if (opt.isPresent()) {
+                distribuidorasRepository.save(distribuidora);
+                responseJson.put("estado", "actualizado");
+                return ResponseEntity.ok(responseJson);
+            } else {
+                responseJson.put("estado", "error");
+                responseJson.put("msg", "El producto a actualizar no existe");
+                return ResponseEntity.badRequest().body(responseJson);
+            }
+        } else {
+            responseJson.put("estado", "error");
+            responseJson.put("msg", "Debe enviar un ID");
+            return ResponseEntity.badRequest().body(responseJson);
+        }
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<HashMap<String,String>> gestionExcepcion(HttpServletRequest request) {
+
+        HashMap<String, String> responseMap = new HashMap<>();
+        if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
+            responseMap.put("estado", "error");
+            responseMap.put("msg", "Debe enviar un producto");
+        }
+        return ResponseEntity.badRequest().body(responseMap);
+    }
+
+
+
+    @PutMapping(value = "/api/distribuidora/parcial")
+    public ResponseEntity<HashMap<String, Object>> actualizarDistribuidoraParcial(@RequestBody Distribuidora distribuidora) {
 
     @GetMapping(value="/api/distribuidora", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public List<Distribuidora> listaDistribuidoras(){
@@ -29,7 +67,7 @@ public class DistribuidoraController {
         return listaD;
     }
 
-    @GetMapping(value="/api/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
+    @GetMapping(value="/distribuidora/{id}", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public ResponseEntity<HashMap<String, Object>> obtenerDistribuidorasId(@PathVariable("id") String idstr){
         HashMap<String, Object> responseJson = new HashMap<>();
 
@@ -77,6 +115,30 @@ public class DistribuidoraController {
         }
         return  ResponseEntity.badRequest().body(responseJson);
     }
+
+    @DeleteMapping(value = "/api/distribuidora/{id}")
+    public ResponseEntity<HashMap<String, Object>> borrarDistribuidora(@PathVariable("id") String idStr) {
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        try {
+            int id = Integer.parseInt(idStr);
+            if (distribuidorasRepository.existsById(id)) {
+                distribuidorasRepository.deleteById(id);
+                responseMap.put("estado", "borrado exitoso");
+                return ResponseEntity.ok(responseMap);
+            } else {
+                responseMap.put("estado", "error");
+                responseMap.put("msg", "no se encontró el producto con id: " + id);
+                return ResponseEntity.badRequest().body(responseMap);
+            }
+        } catch (NumberFormatException ex) {
+            responseMap.put("estado", "error");
+            responseMap.put("msg", "El ID debe ser un número");
+            return ResponseEntity.badRequest().body(responseMap);
+        }
+    }
+
 
 
 }
