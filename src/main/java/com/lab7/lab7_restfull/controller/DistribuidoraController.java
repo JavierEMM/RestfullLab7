@@ -75,7 +75,7 @@ public class DistribuidoraController {
                 return ResponseEntity.ok(responseJson);
             } else {
                 responseJson.put("estado", "error");
-                responseJson.put("msg", "El producto a actualizar no existe");
+                responseJson.put("msg", "La distribuidora a actualizar no existe");
                 return ResponseEntity.badRequest().body(responseJson);
             }
         } else {
@@ -91,7 +91,7 @@ public class DistribuidoraController {
         HashMap<String, String> responseMap = new HashMap<>();
         if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
             responseMap.put("estado", "error");
-            responseMap.put("msg", "Debe enviar un producto");
+            responseMap.put("msg", "Debe enviar una distribuidora");
         }
         return ResponseEntity.badRequest().body(responseMap);
     }
