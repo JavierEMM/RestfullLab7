@@ -55,13 +55,10 @@ public class DistribuidoraController {
             @RequestBody Distribuidora distribuidora,
             @RequestParam(value = "fetchId", required = false) boolean fetchId){
         HashMap<String, Object> responseJson = new HashMap<>();
-        HashMap<String, Object> responseMap = new HashMap<>();
 
         distribuidorasRepository.save(distribuidora);
-        if(fetchId){
-            responseMap.put("id",distribuidora.getId());
-        }
-        responseMap.put("creado","ok");
+
+        responseJson.put("creado","ok");
         return  ResponseEntity.status(HttpStatus.CREATED).body(responseJson);
     }
 
@@ -138,7 +135,6 @@ public class DistribuidoraController {
         responseMap.put("estado", "error");
         return ResponseEntity.badRequest().body(responseMap);
     }
-
 
     @DeleteMapping(value = "/api/distribuidora/{id}")
     public ResponseEntity<HashMap<String, Object>> borrarDistribuidora(@PathVariable("id") String idStr) {
