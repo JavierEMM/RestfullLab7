@@ -1,5 +1,19 @@
 package com.lab7.lab7_restfull.controller;
 
+import com.lab7.lab7_restfull.entity.Distribuidora;
+import com.lab7.lab7_restfull.repository.DistribuidorasRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
 
 import com.lab7.lab7_restfull.entity.Distribuidora;
 import com.lab7.lab7_restfull.repository.DistribuidorasRepository;
@@ -22,6 +36,79 @@ public class DistribuidoraController {
     @Autowired
     DistribuidorasRepository distribuidorasRepository;
 
+    @PutMapping(value = "/distribuidora")
+    public ResponseEntity<HashMap<String,Object>> actualizarDistribuidora(@RequestBody Distribuidora distribuidora) {
+
+        HashMap<String, Object> responseJson = new HashMap<>();
+
+        if (distribuidora.getId() != null && distribuidora.getId() > 0) {
+            Optional<Distribuidora> opt = distribuidorasRepository.findById(distribuidora.getId());
+            if (opt.isPresent()) {
+                distribuidorasRepository.save(distribuidora);
+                responseJson.put("estado", "actualizado");
+                return ResponseEntity.ok(responseJson);
+            } else {
+                responseJson.put("estado", "error");
+                responseJson.put("msg", "El producto a actualizar no existe");
+                return ResponseEntity.badRequest().body(responseJson);
+            }
+        } else {
+            responseJson.put("estado", "error");
+            responseJson.put("msg", "Debe enviar un ID");
+            return ResponseEntity.badRequest().body(responseJson);
+        }
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<HashMap<String,String>> gestionExcepcion(HttpServletRequest request) {
+
+        HashMap<String, String> responseMap = new HashMap<>();
+        if (request.getMethod().equals("POST") || request.getMethod().equals("PUT")) {
+            responseMap.put("estado", "error");
+            responseMap.put("msg", "Debe enviar un producto");
+        }
+        return ResponseEntity.badRequest().body(responseMap);
+    }
+
+
+
+    @PutMapping(value = "/distribuidora/parcial")
+    public ResponseEntity<HashMap<String, Object>> actualizarDistribuidoraParcial(@RequestBody Distribuidora distribuidora) {
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        if (distribuidora.getId() > 0) {
+            Optional<Distribuidora> opt = distribuidorasRepository.findById(distribuidora.getId());
+            if (opt.isPresent()) {
+                Distribuidora distribuidoraFromDb = opt.get();
+
+                if (distribuidora.getNombre() != null)
+                    distribuidoraFromDb.setNombre(distribuidora.getNombre());
+
+                if (distribuidora.getDescripcion() != null)
+                    distribuidoraFromDb.setDescripcion(distribuidora.getDescripcion());
+
+                if (distribuidora.getFundacion() != null)
+                    distribuidoraFromDb.setFundacion(distribuidora.getFundacion());
+
+                if (distribuidora.getWeb() != null)
+                    distribuidoraFromDb.setWeb(distribuidora.getWeb());
+
+                if (distribuidora.getIdsede() != null)
+                    distribuidoraFromDb.setIdsede(distribuidora.getIdsede());
+
+                distribuidorasRepository.save(distribuidoraFromDb);
+                responseMap.put("estado", "actualizado");
+                return ResponseEntity.ok(responseMap);
+            } else {
+                responseMap.put("msg", "La distribuidora a actualizar no existe");
+            }
+        } else {
+            responseMap.put("msg", "Debe enviar un ID");
+        }
+        responseMap.put("estado", "error");
+        return ResponseEntity.badRequest().body(responseMap);
+    }
 
     @GetMapping(value="/distribuidora", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     public List<Distribuidora> listaDistribuidoras(){
