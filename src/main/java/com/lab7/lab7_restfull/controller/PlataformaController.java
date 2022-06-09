@@ -12,6 +12,8 @@ import java.util.List;
 
 @RestController
 public class PlataformaController {
+
+    //Creamos este controller para comprobar un error del guardado de objetos pero aún así no funciona
     @Autowired
     PlataformaRepository plataformaRepository;
 
