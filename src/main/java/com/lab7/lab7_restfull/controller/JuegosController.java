@@ -52,18 +52,18 @@ public class JuegosController {
     }
 
     @GetMapping(value = "/juegos/usuario/{id}")
-    public List<JuegoUserDTO> obtenerJuegoPorIdUser(@PathVariable("id") String idStr){
+    public List<Juego> obtenerJuegoPorIdUser(@PathVariable("id") String idStr){
         try{
             int id = Integer.parseInt(idStr);
 
-            List<JuegoUserDTO> lista = juegosRepository.obtenerJuegosPorUser(id);
+            List<Juego> lista = juegosRepository.obtenerJuegosUsuario(id);
             if(lista.size()>0){
                 return lista;
             }
         }catch (NumberFormatException e){
 
         }
-        List<JuegoUserDTO> listaVacia = new ArrayList<>();
+        List<Juego> listaVacia = new ArrayList<>();
         return listaVacia;
     }
 
